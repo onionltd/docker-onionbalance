@@ -1,0 +1,20 @@
+version: "3.3"
+services:
+  tor_hs:
+    image: localhost/tor-hidden-service:v0.4.4.6
+    restart: always
+    environment:
+      HTTPD_TOR_SERVICE_HOSTS: 80:httpd:80
+      HTTPD_TOR_SERVICE_VERSION: '3'
+      HTTPD_TOR_SERVICE_KEY: "PT0gZWQyNTUxOXYxLXNlY3JldDogdHlwZTAgPT0AAADATNnEJdc1/okUgUaenYM+v3/y9ZVReWTExzGldTT+WjDwcuW78tCJKAeFdh7glIdi+DXGkRCGzJL2gzX2jA5c"
+      TOR_EXTRA_OPTIONS: |
+        DataDirectory /var/lib/tor/hidden_service
+    depends_on:
+      - httpd
+
+  httpd:
+    image: nginx:stable-alpine
+    restart: always
+    environment:
+      NGINX_HOST: 0.0.0.0
+      NGINX_PORT: 8080

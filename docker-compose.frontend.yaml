@@ -1,0 +1,28 @@
+version: "3.3"
+services:
+  tor:
+    image: localhost/tor-hidden-service:v0.4.4.6
+    restart: always
+    environment:
+      TOR_EXTRA_OPTIONS: |
+        DataDirectory /var/lib/tor/hidden_service
+        ControlPort 0.0.0.0:9051
+        CookieAuthentication 1
+    volumes:
+      - tor_volume:/var/lib/tor/hidden_service/
+
+  onionbalance:
+    image: localhost/onionbalance:latest
+    restart: always
+    environment:
+      TOR_CONTROL_IP: tor
+      TOR_CONTROL_PORT: 9051
+      HTTPD_TOR_SERVICE_KEY: "PT0gZWQyNTUxOXYxLXNlY3JldDogdHlwZTAgPT0AAAAIxxRQstlA+F5r+f+0clHd2F9eBCIvojBIb+ASb/2df6UVXdmBxGnHYAE72zpymHGBpE7YcY3b41tp82ZQucXg"
+      HTTPD_TOR_SERVICE_NODE_1: juhu5cebdr4jlv33puderf7ow7air7ilo6ulcwrflkz5w6ttkxghnfad.onion
+    volumes:
+      - tor_volume:/var/lib/tor/hidden_service/
+    depends_on:
+      - tor
+
+volumes:
+  tor_volume:
